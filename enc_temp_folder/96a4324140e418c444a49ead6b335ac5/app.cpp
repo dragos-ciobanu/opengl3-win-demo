@@ -152,7 +152,7 @@ int main(void)
     float rotation = 0.0f;
     double prevTime = glfwGetTime();
 
-    float fova = 60.0f;
+    float fova = 45.0f;
     float znear = 0.1f;
     float zfar = 2000.0f;
 

@@ -1,7 +1,7 @@
 #shader vertex
 #version 330 core
 
-layout(location = 0) in vec2 v_pos;
+layout(location = 0) in vec3 v_pos;
 layout(location = 1) in vec2 texCoord;
 
 out vec2 v_TexCoord;
@@ -9,7 +9,7 @@ out vec2 v_TexCoord;
 uniform mat4 u_MVP;
 
 void main() {
-    gl_Position = u_MVP * vec4(v_pos, 0.0, 1.0);
+    gl_Position = u_MVP * vec4(v_pos, 1.0);
     v_TexCoord = texCoord;
 }
 #shader fragment

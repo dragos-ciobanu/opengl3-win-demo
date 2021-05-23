@@ -131,7 +131,7 @@ int main(void)
         shader.setUniform1i("u_Texture", 0);
         //shader.setUniform1i("u_Texture", 1);
 
-        //Texture trekTexture("res/textures/trek.png", GL_REPEAT);
+        Texture trekTexture("res/textures/trek.png", GL_REPEAT);
         //trekTexture.Bind(1);
 
         //unsigned int positionLocation = shader.getAttributeLocation("v_pos");
@@ -182,11 +182,11 @@ int main(void)
             shader.Bind();
             shader.setUniformMat4f("u_MVP", mvp);
 
+            shader.setUniform1i("u_Texture", 0);
             brickTexture.Bind();
             renderer.Draw(va, ib, shader);
-            //brickTexture.Unbind();
-            //shader.setUniform1i("u_Texture", 1);
-            //trekTexture.Bind(1);
+            shader.setUniform1i("u_Texture", 1);
+            trekTexture.Bind(1);
             renderer.Draw(va, ibLand, shader);
 
             {

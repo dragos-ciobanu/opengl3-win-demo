@@ -17,15 +17,16 @@ bool GLLogCall(const char *function, const char *file, int line) {
 }
 
 
-void Renderer::Draw(const VertexBuffer &vb, const IndexBuffer &ib, const Shader &shader) const {
-    GLCall(shader.Bind());
-    GLCall(ib.Bind());
-    GLCall(vb.Bind());
+void Renderer::Draw(const VertexArray &va, const IndexBuffer &ib, const Shader &shader) const {
+    shader.Bind();
+    va.Bind();
+    ib.Bind();
 
     GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
 
 }
 
 void Renderer::Clear() const {
+    glClearColor(0.05f, 0.2f, 0.2f, 1.0f);
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }

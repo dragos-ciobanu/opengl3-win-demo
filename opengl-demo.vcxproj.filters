@@ -63,6 +63,12 @@
     <ClCompile Include="src\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3.h">
@@ -974,6 +980,15 @@
     <ClInclude Include="src\VertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexBufferLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="vendor\GLFW\lib\glfw3.lib" />
@@ -1388,6 +1403,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="res\shaders\basic.shader" />
+    <None Include="res\shaders\light.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\ChernoLogoAlpha.png">

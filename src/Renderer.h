@@ -12,7 +12,7 @@
 #include <GL/gl.h>
 #endif
 #include <GLFW/glfw3.h>
-#include "VertexBuffer.h"
+#include "VertexArray.h"
 #include "Shader.h"
 #include "IndexBuffer.h"
 
@@ -32,6 +32,6 @@ private:
 
 public:
     void Clear() const;
-    void Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader) const;
+    void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 };
 #endif //HAND_RENDERER_H

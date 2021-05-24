@@ -7,13 +7,13 @@
 
 #include "Camera.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include <fstream>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
+#include <array>
+#include "Shapes.cpp"
 
 unsigned int width = 1920;
 unsigned int height = 1080;
@@ -73,53 +73,18 @@ int main(void)
     std::cout << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     {
-        float positions[] = {
-        //      X        Y       Z          Tex X   Tex Y   TextureID
-             200.0f,    0.0f,  -200.0f,     0.0f,   0.0f,       1.0f,
-             600.0f,    0.0f,  -200.0f,     5.0f,   0.0f,       1.0f,
-             600.0f,    0.0f,  -600.0f,     0.0f,   0.0f,       1.0f,
-             200.0f,    0.0f,  -600.0f,     5.0f,   0.0f,       1.0f,
-             400.0f,  400.0f,  -400.0f,     2.5f,   5.0f,       1.0f,
-                                                                
-               0.0f,    0.0f,     0.0f,      0.0f,   0.0f,      2.0f,
-            1000.0f,    0.0f,     0.0f,     10.0f,   0.0f,      2.0f,
-            1000.0f,    0.0f, -1000.0f,     10.0f,  10.0f,      2.0f,
-               0.0f,    0.0f, -1000.0f,      0.0f,  10.0f,      2.0f,
-
-
-
-        };
-
-        GLuint indices[] =
-        {
-            // draw pyramid
-            0, 1, 2,
-            0, 2, 3,
-            0, 1, 4,
-            1, 2, 4,
-            2, 3, 4,
-            3, 0, 4,
-
-            // draw land
-            5, 6, 7,
-            5, 7, 8
-        };
-
-        GLuint landIndices[] = {
-            // draw land
-            5, 6, 7,
-            5, 7, 8
-        };
-
 
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+        const size_t maxQuadCount = 1000;
+        const size_t maxVertexCount = maxQuadCount * 8;
+        const size_t maxIndexCount = maxQuadCount * 36;
+
 
         VertexArray va;
-        VertexBuffer vb(positions, (4 + 5) * 6 * sizeof(float));
-        IndexBuffer ib(indices, 24);
-        IndexBuffer ibLand(landIndices, 6);
+//        VertexBuffer vb(positions, (4 + 5) * 6 * sizeof(float));
+        VertexBuffer vb(nullptr, sizeof(Vertex) * maxVertexCount, GL_DYNAMIC_DRAW);
 
         VertexBufferLayout layout;
         layout.Push<float>(3);
@@ -136,15 +101,18 @@ int main(void)
         brickTexture.Bind(1);
         Texture grassTexture("res/textures/grass.jpg", GL_REPEAT);
         grassTexture.Bind(2);
-        Texture trekTexture("res/textures/trek.png", GL_REPEAT );
+        Texture trekTexture("res/textures/trek.png", GL_REPEAT);
         trekTexture.Bind(3);
+        Texture palmBarkTexture("res/textures/palm-bark.jpg", GL_REPEAT);
+        palmBarkTexture.Bind(4);
+        Texture palmLeafTexture("res/textures/palm-leaf.jpg", GL_CLAMP_TO_EDGE);
+        palmLeafTexture.Unbind();
+        palmLeafTexture.Bind(5);
 
         int samplers[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
         shader.setUniform1iv("u_Textures", 8, samplers);
 
-        ib.Unbind();
-        ibLand.Unbind();
         vb.Unbind();
         shader.Unbind();
 
@@ -164,6 +132,80 @@ int main(void)
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
+            unsigned int vertexSize = 0;
+            unsigned int indexCount = 0;
+            std::array<Vertex, maxVertexCount> vertices;
+            std::array<unsigned int, maxIndexCount> indices;
+            Vertex* buffer = vertices.data();
+            unsigned int* indexBuffer = indices.data();
+
+            for (unsigned int i = 0; i < 7; i++) {
+                buffer = CreateCube(buffer, 150.0f * i, 0.0f, 50.0f, 100.0f, glm::vec3(1.0f), 3);
+                indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
+                vertexSize += 8;
+                indexCount += 36;
+                
+            }
+
+            for (unsigned int i = 0; i < 6; i++) {
+                // draw tree trunk
+                float depth = -200.0f - (i * 100.0f);
+                buffer = CreateCuboid(buffer, glm::vec3(100.0f, 0.0f, depth), glm::vec3(110.0f, 200.0f, depth-10.0f), glm::vec3(1.0f), 4);
+                indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
+                vertexSize += 8;
+                indexCount += 36;
+                
+                // draw tree top
+                depth = -170.0f - (i * 100.0f);
+                buffer = CreateCuboid(buffer, glm::vec3(70.0f, 200.0f, depth), glm::vec3(140.0f, 210.0f, depth-70.0f), glm::vec3(1.0f), 5);
+                indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
+                vertexSize += 8;
+                indexCount += 36;
+
+            }  
+            
+            for (unsigned int i = 0; i < 8; i++) {
+                // draw tree trunk
+                float x = 100.0f + (i * 100.0f);
+                buffer = CreateCuboid(buffer, glm::vec3(x, 0.0f, -900.0f), glm::vec3(x + 10.0f, 200.0f, -910.0f), glm::vec3(1.0f), 4);
+                indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
+                vertexSize += 8;
+                indexCount += 36;
+                
+                // draw tree top
+                x = 70.0f + (i * 100.0f);
+                buffer = CreateCuboid(buffer, glm::vec3(x, 200.0f, -870.0f), glm::vec3(x + 70.0f, 210.0f, -940.0f), glm::vec3(1.0f), 5);
+                indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
+                vertexSize += 8;
+                indexCount += 36;
+
+            }
+
+            {   //draw the big pyramid
+                buffer = CreatePyramid(buffer, 200.0f, 0.0f, -200.0f, 400.0f, 400.0f, glm::vec3(1.0f), 1);
+                indexBuffer = CreatePyramidIndices(indexBuffer, vertexSize);
+                vertexSize += 5;
+                indexCount += 18;
+            }  
+            {
+                // draw the ground
+                buffer = CreatePlane(buffer, 0.0f, 0.0f, 0.0f, 1000.0f, glm::vec3(1.0f), 2.0f);
+                indexBuffer = CreatePlaneIndices(indexBuffer, vertexSize);
+                vertexSize += 4;
+                indexCount += 6;
+            }
+
+
+
+            IndexBuffer ib(indices.data(), indices.size());
+            ib.Bind();
+            // set dynamic vertex buffer
+            vb.Bind();
+            //glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positions2), positions2);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
+            
+
+            // clear the screen
             renderer.Clear();
             // Simple timer
             double crntTime = glfwGetTime();
@@ -189,6 +231,7 @@ int main(void)
             shader.Bind();
             shader.setUniformMat4f("u_MVP", mvp);
             renderer.Draw(va, ib, shader);
+            //renderer.Draw(va, ibQuad, shader);
 
 
             {

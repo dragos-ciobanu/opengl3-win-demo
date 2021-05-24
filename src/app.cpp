@@ -74,16 +74,17 @@ int main(void)
 
     {
         float positions[] = {
-             200.0f,    0.0f,  -200.0f, 0.0f, 0.0f,
-             600.0f,    0.0f,  -200.0f, 5.0f, 0.0f,
-             600.0f,    0.0f,  -600.0f, 0.0f, 0.0f,
-             200.0f,    0.0f,  -600.0f, 5.0f, 0.0f,
-             400.0f,  400.0f,  -400.0f, 2.5f, 5.0f,
-
-               0.0f,    0.0f,     0.0f, 0.0f, 0.0f,
-            1000.0f,    0.0f,     0.0f, 5.0f, 0.0f,
-            1000.0f,    0.0f, -1000.0f, 5.0f, 5.0f,
-               0.0f,    0.0f, -1000.0f, 0.0f, 5.0f,
+        //      X        Y       Z          Tex X   Tex Y   TextureID
+             200.0f,    0.0f,  -200.0f,     0.0f,   0.0f,       1.0f,
+             600.0f,    0.0f,  -200.0f,     5.0f,   0.0f,       1.0f,
+             600.0f,    0.0f,  -600.0f,     0.0f,   0.0f,       1.0f,
+             200.0f,    0.0f,  -600.0f,     5.0f,   0.0f,       1.0f,
+             400.0f,  400.0f,  -400.0f,     2.5f,   5.0f,       1.0f,
+                                                                
+               0.0f,    0.0f,     0.0f,      0.0f,   0.0f,      2.0f,
+            1000.0f,    0.0f,     0.0f,     10.0f,   0.0f,      2.0f,
+            1000.0f,    0.0f, -1000.0f,     10.0f,  10.0f,      2.0f,
+               0.0f,    0.0f, -1000.0f,      0.0f,  10.0f,      2.0f,
 
 
 
@@ -98,6 +99,10 @@ int main(void)
             1, 2, 4,
             2, 3, 4,
             3, 0, 4,
+
+            // draw land
+            5, 6, 7,
+            5, 7, 8
         };
 
         GLuint landIndices[] = {
@@ -112,13 +117,14 @@ int main(void)
 
 
         VertexArray va;
-        VertexBuffer vb(positions, (4 + 5) * 5 * sizeof(float));
-        IndexBuffer ib(indices, 18);
+        VertexBuffer vb(positions, (4 + 5) * 6 * sizeof(float));
+        IndexBuffer ib(indices, 24);
         IndexBuffer ibLand(landIndices, 6);
 
         VertexBufferLayout layout;
         layout.Push<float>(3);
         layout.Push<float>(2);
+        layout.Push<float>(1);
 
         va.addBuffer(vb, layout);
 
@@ -127,15 +133,15 @@ int main(void)
 
 
         Texture brickTexture("res/textures/bricks.jpg", GL_REPEAT);
-        brickTexture.Bind();
-        shader.setUniform1i("u_Texture", 0);
-        //shader.setUniform1i("u_Texture", 1);
+        brickTexture.Bind(1);
+        Texture grassTexture("res/textures/grass.jpg", GL_REPEAT);
+        grassTexture.Bind(2);
+        Texture trekTexture("res/textures/trek.png", GL_REPEAT );
+        trekTexture.Bind(3);
 
-        Texture trekTexture("res/textures/trek.png", GL_REPEAT);
-        //trekTexture.Bind(1);
+        int samplers[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-        //unsigned int positionLocation = shader.getAttributeLocation("v_pos");
-        //unsigned int texLocation = shader.getAttributeLocation("texCoord");
+        shader.setUniform1iv("u_Textures", 8, samplers);
 
         ib.Unbind();
         ibLand.Unbind();
@@ -148,7 +154,8 @@ int main(void)
 
         float fova = 60.0f;
         float znear = 0.1f;
-        float zfar = 2000.0f;
+        float zfar = 3000.0f;
+
 
         glm::vec3 eye = glm::vec3(1200.0f, 1000.0f, 850.0f);
         glEnable(GL_DEPTH_TEST);
@@ -178,16 +185,11 @@ int main(void)
             camera.Inputs(window);
             glm::mat4 cameraMatrix = camera.getCameraMatrix(fova, znear, zfar);
             glm::mat4 mvp = cameraMatrix * model;
-
+            // draw big pyramid
             shader.Bind();
             shader.setUniformMat4f("u_MVP", mvp);
-
-            shader.setUniform1i("u_Texture", 0);
-            brickTexture.Bind();
             renderer.Draw(va, ib, shader);
-            shader.setUniform1i("u_Texture", 1);
-            trekTexture.Bind(1);
-            renderer.Draw(va, ibLand, shader);
+
 
             {
                 ImGui::SliderFloat3("EYE", &eye.x, -500.0f, 14000.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -198,7 +200,7 @@ int main(void)
             }
             // Rendering
             ImGui::Render();
-            //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+//            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
             /* Poll for and process events */

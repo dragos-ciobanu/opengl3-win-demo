@@ -15,11 +15,12 @@ private:
     unsigned char* m_localBuffer;
     int m_width, m_height, m_BPP;
     unsigned int m_texWrap;
+    unsigned int m_slot;
 public:
     Texture(const std::string& path, unsigned int wrapType = GL_CLAMP_TO_EDGE);
     ~Texture();
 
-    void Bind(unsigned int slot = 0) const;
+    void Bind(unsigned int slot = 0);
     void Unbind() const;
 
     inline int getWidth() const { return m_width;};

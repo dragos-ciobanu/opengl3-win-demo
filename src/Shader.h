@@ -33,6 +33,7 @@ public:
     unsigned int getAttributeLocation(std::string name);
     // Set uniforms
     void setUniform1i(const std::string &name, int val);
+    void setUniform1iv(const std::string& name, int count, const int* val);
     void setUniform1f(const std::string &name, float val);
     void setUniform4f(const std::string &name, float v0, float v1, float v2, float v3);
     void setUniformMat4f(const std::string &name, const glm::mat4& value);

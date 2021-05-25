@@ -31,7 +31,7 @@ private:
 public:
 	static constexpr glm::vec3 OrientationFrontal = glm::vec3(0.0f, 0.0f, -1.0f);
 	static constexpr glm::vec3 OrientationTopRight = glm::vec3(0.445f, 0.225f, -0.855f);
-	static constexpr glm::vec3 OrientationBottomLeft = glm::vec3(-0.445f, -0.225f, -0.855f);
+	static constexpr glm::vec3 OrientationBottomLeft = glm::vec3(-0.445f, -0.6f, -0.855f);
 	Camera(int width, int height, glm::vec3 position, glm::vec3 myOrientation = Camera::OrientationFrontal);
 
 	// returns the camera matrix 

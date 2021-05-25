@@ -60,7 +60,7 @@ int main(void)
     glfwSwapInterval(1);
     glViewport(0, 0, width, height);
 
-    std::srand(std::time(nullptr));
+    std::srand((unsigned int)std::time(nullptr));
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -86,7 +86,7 @@ int main(void)
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        const size_t maxQuadCount = 1000;
+        const size_t maxQuadCount = 60;
         const size_t maxVertexCount = maxQuadCount * 8;
         const size_t maxIndexCount = maxQuadCount * 36;
 
@@ -144,7 +144,7 @@ int main(void)
         float housesHeight[10];
         for (unsigned int i = 0; i < 10; i++) {
             housesX[i] = getRand(600, 900);
-            housesHeight[i] = getRand(50, 150);
+            housesHeight[i] = getRand(40, 100);
         }
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -158,6 +158,7 @@ int main(void)
 
             for (unsigned int i = 0; i < 10; i++) 
             {
+                //draw houses
                 buffer = CreateCube(buffer, housesX[i], 0.0f, -50.0f - (i * 100), housesHeight[i], glm::vec3(1.0f), 6);
                 indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
                 vertexSize += 8;

@@ -1409,16 +1409,22 @@
     <None Include="res\shaders\light.shader" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\ChernoLogoAlpha.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\sentry.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\star-trek-deep-space-nine.jpeg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\textures\trek.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\bricks.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\grass.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\house.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\palm-bark.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\palm-leaf.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

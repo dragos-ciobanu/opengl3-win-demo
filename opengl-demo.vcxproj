@@ -617,9 +617,11 @@
     <None Include="vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\ChernoLogoAlpha.png" />
-    <Image Include="res\textures\sentry.png" />
-    <Image Include="res\textures\star-trek-deep-space-nine.jpeg" />
+    <Image Include="res\textures\bricks.jpg" />
+    <Image Include="res\textures\grass.jpg" />
+    <Image Include="res\textures\house.jpg" />
+    <Image Include="res\textures\palm-bark.jpg" />
+    <Image Include="res\textures\palm-leaf.jpg" />
     <Image Include="res\textures\trek.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

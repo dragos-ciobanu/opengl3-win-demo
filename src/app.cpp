@@ -8,6 +8,9 @@
 #include "Camera.h"
 
 #include <fstream>
+#include <cstdlib>
+#include <stdlib.h>
+#include <ctime>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -23,6 +26,11 @@ static void glfw_error_callback(int error, const char* description)
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
+static float getRand(float start = 0.0f, float end = RAND_MAX)
+{
+    return std::rand() % (int)(end - start) + start;    
+}
+
 int main(void)
 {
     glfwSetErrorCallback(glfw_error_callback);
@@ -33,7 +41,7 @@ int main(void)
 
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
@@ -52,6 +60,7 @@ int main(void)
     glfwSwapInterval(1);
     glViewport(0, 0, width, height);
 
+    std::srand(std::time(nullptr));
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -106,9 +115,10 @@ int main(void)
         Texture palmBarkTexture("res/textures/palm-bark.jpg", GL_REPEAT);
         palmBarkTexture.Bind(4);
         Texture palmLeafTexture("res/textures/palm-leaf.jpg", GL_CLAMP_TO_EDGE);
-        palmLeafTexture.Unbind();
         palmLeafTexture.Bind(5);
-
+        Texture houseTexture("res/textures/house.jpg", GL_CLAMP_TO_EDGE);
+        houseTexture.Unbind();
+        houseTexture.Bind(6);
         int samplers[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
         shader.setUniform1iv("u_Textures", 8, samplers);
@@ -120,7 +130,7 @@ int main(void)
 
         double prevTime = glfwGetTime();
 
-        float fova = 60.0f;
+        float fova = 45.0f;
         float znear = 0.1f;
         float zfar = 3000.0f;
 
@@ -129,6 +139,13 @@ int main(void)
         glEnable(GL_DEPTH_TEST);
 
         Camera camera(width, height, eye, Camera::OrientationBottomLeft);
+        // generate specifications for our houses to be drawn
+        float housesX[10];
+        float housesHeight[10];
+        for (unsigned int i = 0; i < 10; i++) {
+            housesX[i] = getRand(600, 900);
+            housesHeight[i] = getRand(50, 150);
+        }
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
@@ -139,6 +156,15 @@ int main(void)
             Vertex* buffer = vertices.data();
             unsigned int* indexBuffer = indices.data();
 
+            for (unsigned int i = 0; i < 10; i++) 
+            {
+                buffer = CreateCube(buffer, housesX[i], 0.0f, -50.0f - (i * 100), housesHeight[i], glm::vec3(1.0f), 6);
+                indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
+                vertexSize += 8;
+                indexCount += 36;
+                
+            }
+            // draw star trek cubes :)
             for (unsigned int i = 0; i < 7; i++) {
                 buffer = CreateCube(buffer, 150.0f * i, 0.0f, 50.0f, 100.0f, glm::vec3(1.0f), 3);
                 indexBuffer = CreateCubeIndices(indexBuffer, vertexSize);
